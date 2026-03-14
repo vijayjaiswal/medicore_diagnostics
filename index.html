@@ -1,0 +1,391 @@
+import React, { useState } from 'react';
+import { 
+  HeartPulse, 
+  MapPin, 
+  Stethoscope, 
+  Microscope, 
+  ShieldCheck, 
+  Award, 
+  ChevronDown, 
+  ChevronUp,
+  Activity,
+  User,
+  Phone,
+  Mail,
+  ArrowRight
+} from 'lucide-react';
+
+// --- DATA ---
+const cities = [
+  "Agra", "Ahmadnagar", "Ahmedabad", "Ahmednagar", "Aligarh", "Allahabad", "Almora", "Alwar", 
+  "Ambala", "Amravati", "Amritsar", "Anand", "Aurangabad", "Ayodhya", "Azamgarh", "Bahadurgarh", 
+  "Bahraich", "Bareilly", "Belgaum", "Bengaluru", "Bharatpur", "Bhatinda", "Bhilai", "Bhopal", 
+  "Bhubaneswar", "Bijnor", "Bikaner", "Bilaspur", "Bokaro", "Bulandshahar", "Chandigarh", "Chennai", 
+  "Chomu", "Darbhanga", "Dehradun", "Delhi", "Dhanbad", "Faridabad", "Firozabad", "Gajraula", 
+  "Gandhinagar", "Ganganagar", "Ghaziabad", "Gonda", "Gorakhpur", "Greater Noida", "Greater Noida Pc", 
+  "Guntur", "Gurgaon", "Guwahati", "Gwalior", "Hardoi", "Haridwar", "Hathras", "Hazaribagh", "Hisar", 
+  "Hoshiarpur", "Howrah", "Hyderabad", "Indore", "Jabalpur", "Jaipur", "Jalandhar", "Jamnagar", 
+  "Jamshedpur", "Jhansi", "Jodhpur", "Kanpur", "Karimnagar", "Karnal", "Kolkata", "Kota", "Kurukshetra", 
+  "Lucknow", "Ludhiana", "Mathura", "Meerut", "Mehsana", "Modinagar", "Moga", "Mohali", "Moradabad", 
+  "Muktsar", "Mumbai", "Muzaffarnagar", "Mysuru", "Nagpur", "Nashik", "Noida", "Palwal", "Panchkula", 
+  "Panipat", "Patiala", "Patna", "Pratapgarh", "Pune", "Raebareli", "Raipur", "Rajkot", "Ranchi", 
+  "Rohtak", "Roorkee", "Saharanpur", "Sikar", "Sirsa", "Sitamarhi", "Sohna", "Sonipat", "Surat", 
+  "Tarn Taran", "Udaipur", "Ujjain", "Vadodara", "Varanasi", "Vijayawada", "Vijaywada", "Visakhapatnam", 
+  "Warangal", "Yamuna Nagar"
+];
+
+const healthTests = [
+  "Allergy Testing", "Amylase Test", "Anemia Test", "Anti Hcv Test", "Arthritis Test", "Ca125 Test", 
+  "CBC Test", "Chikungunya Test", "Cholesterol Test", "Dengue Test", "Diabetes Test", "Fever Test", 
+  "HbA1c Test", "HbsAg Test", "Hepatitis B Test", "HIV Test", "Hormone Test", "Immunity Test", 
+  "Iron Studies Test", "Kidney Function Test", "Lipid Profile Test", "Liver Function Test", "Malaria Test", 
+  "Pancreatitis Test", "PCOS Test", "Early Pregnancy Checkup", "PSA Test", "STD Test", "Stool Test", 
+  "Sugar Test", "Thyroid Test", "Typhoid Test", "Uric Acid Test", "Urine Test", "Viral Marker Test", 
+  "Vitamin B12 Test", "Vitamin D Test", "Vitamin Test"
+];
+
+const radiologyTests = [
+  "PET Scan", "MRI Scan", "CT Scan", "Ultrasound Scan", "X-Ray Scan", "ECG Test", "EEG Test", 
+  "Echo Scan", "Treadmill Test", "PFT Tests", "DEXA Scan", "Mri Brain", "Mri Lumbar Spine Plain", 
+  "Mri Cervical Spine", "Mri Right Knee", "Mri Left Knee", "Brain Mri With Contrast", "Mri Right Shoulder", 
+  "Mri Left Shoulder", "Mri Lumbar Spine With Whole Spine Screening", "Mri Pelvis Female", "Mri Whole Spine", 
+  "Mri Cervical Spine With Whole Spine Screening", "Mri Pelvis With Contrast", "Mri Pelvis Male", 
+  "Mri Abdomen And Pelvis", "Ct Scan Axial", "Brain Ct Scan", "Ct Brain Plain", "Ct Enterography", 
+  "Hrct Chest Scan", "Ct Abdomen Plain", "Ct Chest Plain", "Ct Abdomen Plain With Contrast", "Ct Kub", 
+  "Ct Coronary Angiogram", "Ct Chest Plain With Contrast", "Ct Pns Scan", "Ct Whole Abdomen Plain", 
+  "Ct Whole Abdomen Plain With Contrast", "Ct Scan Neck", "Hrct Temporal Bone", "Usg Abdomen", 
+  "Usg Full Abdomen", "Usg Kub", "Usg Abdomen And Pelvis", "Usg Pelvis", "Tvs Transvaginal Ultrasound", 
+  "Usg Lower Abdomen", "Nt Scan", "Tiffa Scan", "Early Pregnancy Viability Scan", "Sonomammography Both Breast", 
+  "Usg Upper Abdomen", "Usg Breast", "Usg Scrotal Scan", "Usg Follicular Study", "Xray Chest Pa View", 
+  "Xray Chest Ap View", "Xray Lumbar Spine Ap And Lateral View", "Xray Cervical Spine Ap And Lateral View", 
+  "Xray Abdomen Ap View", "Xray Lumbar Spine Lateral View", "Xray Lumbar Spine Ap View", "Xray Cervical Spine Ap View", 
+  "Xray Pelvis Ap View", "Xray Left Knee Ap And Lateral View", "Xray Right Knee Ap And Lateral View", 
+  "Xray Left Knee Ap View", "Xray Ls Spine Extension View", "Xray Left Wrist Joint Ap View", "Xray Left Knee Lateral View"
+];
+
+const testsByRisk = [
+  "Fever Test", "STD Test", "Vitamins Test", "Diabetes Test", "Heart Test", "Thyroid Test", "Kidney Test", 
+  "Allergy Test", "Liver Test", "Joints Test", "Bone Test", "Fatigue Test", "Acidity Test", "Cancer Test", 
+  "Anaemia Test", "Hypertension Test", "Obesity Test", "Hormones Test", "Arthritis Test", "Hepatitis Test", 
+  "Immunity Test", "Jaundice Test", "Digestion Test", "Infections Test", "Pregnancy Test", "Infertility Test"
+];
+
+const testsByHabit = [
+  "Alcoholism", "Anger", "Eating Poorly", "Heartburn", "Junk Food", "Low Iron Diet", "Medicine Overuse", 
+  "Poor Nutrition", "Sleeplessness", "Smoking", "Stress", "Zero Exercise"
+];
+
+// --- COMPONENTS ---
+
+const Nav = () => (
+  <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between h-20 items-center">
+        <div className="flex items-center gap-2">
+          <HeartPulse className="h-8 w-8 text-blue-600" />
+          <span className="font-bold text-2xl tracking-tight text-gray-900">MediCore<span className="text-blue-600">Diagnostics</span></span>
+        </div>
+        <div className="hidden md:flex space-x-8">
+          <a href="#home" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Home</a>
+          <a href="#leadership" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Leadership</a>
+          <a href="#services" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Checkups & Cities</a>
+          <a href="#diagnostics" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Diagnostics</a>
+          <a href="#assessments" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Assessments</a>
+        </div>
+        <div className="hidden md:flex">
+          <button className="bg-blue-600 text-white px-6 py-2.5 rounded-full font-medium hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
+            Book a Test
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+);
+
+const Hero = () => (
+  <section id="home" className="relative bg-blue-50 pt-20 pb-24 overflow-hidden">
+    <div className="absolute inset-0 z-0">
+      <svg className="absolute left-0 top-0 h-full w-full text-blue-100/50" preserveAspectRatio="none" viewBox="0 0 100 100" fill="currentcolor">
+        <polygon points="0,0 100,0 0,100" />
+      </svg>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="text-center max-w-3xl mx-auto">
+        <span className="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold mb-6">
+          Your Health, Our Mission
+        </span>
+        <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-tight">
+          Comprehensive Health <br className="hidden md:block"/> Checkups & Diagnostics
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 mb-10">
+          Get accurate, timely, and comprehensive health checkups from a trusted diagnostic network. Advanced radiology, pathology, and specialized screenings based on your lifestyle at a center near you.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <button className="bg-blue-600 text-white px-8 py-3.5 rounded-full font-semibold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-600/30 flex items-center justify-center gap-2">
+            <Activity className="w-5 h-5" />
+            Book a Test Now
+          </button>
+          <button className="bg-white text-blue-600 border border-blue-200 px-8 py-3.5 rounded-full font-semibold text-lg hover:bg-blue-50 transition-all flex items-center justify-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Find a Center
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const Leadership = () => (
+  <section id="leadership" className="py-20 bg-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-gray-900">Driven by Operational Excellence</h2>
+        <div className="w-20 h-1 bg-blue-600 mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div className="bg-slate-50 rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col lg:flex-row">
+        <div className="lg:w-1/3 bg-blue-900 text-white p-10 flex flex-col items-center justify-center text-center">
+          <div className="w-32 h-32 bg-blue-800 rounded-full flex items-center justify-center mb-6 border-4 border-blue-400 shadow-xl">
+            <User className="w-16 h-16 text-blue-200" />
+          </div>
+          <h3 className="text-2xl font-bold mb-2">Lt. Col. Meenakshi Devi Sharma (Retd.)</h3>
+          <p className="text-blue-300 font-medium mb-1">Chief Executive Officer</p>
+          <p className="text-sm text-blue-200">Hospital Administrator | Quality & Patient Safety Leader | Healthcare Consultant</p>
+        </div>
+        <div className="lg:w-2/3 p-10 lg:p-12 flex flex-col justify-center">
+          <h4 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Award className="w-6 h-6 text-blue-600" />
+            Leadership Profile
+          </h4>
+          <ul className="space-y-4">
+            <li className="flex gap-4">
+              <div className="mt-1 bg-blue-100 p-1.5 rounded-full h-fit"><ShieldCheck className="w-4 h-4 text-blue-600" /></div>
+              <p className="text-gray-700"><strong>25+ Years of Experience:</strong> Distinguished Healthcare Leader and Military Veteran specializing in Hospital Administration, Quality Assurance, and Clinical Governance.</p>
+            </li>
+            <li className="flex gap-4">
+              <div className="mt-1 bg-blue-100 p-1.5 rounded-full h-fit"><Activity className="w-4 h-4 text-blue-600" /></div>
+              <p className="text-gray-700"><strong>Specialized Operations:</strong> Proven expertise in establishing and operationalizing Trauma Centers, Emergency Units, and Transplant Programs in high-pressure environments.</p>
+            </li>
+            <li className="flex gap-4">
+              <div className="mt-1 bg-blue-100 p-1.5 rounded-full h-fit"><Stethoscope className="w-4 h-4 text-blue-600" /></div>
+              <p className="text-gray-700"><strong>Crisis Management:</strong> Directed hospital surge planning during the COVID-19 pandemic, overseeing the treatment of 2,000+ patients and achieving an 81% recovery rate through optimized care pathways.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const ServicesCities = () => {
+  const [expanded, setExpanded] = useState(false);
+  const displayCities = expanded ? cities : cities.slice(0, 24);
+
+  return (
+    <section id="services" className="py-20 bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Nationwide Full Body Checkups</h2>
+            <p className="text-gray-600 max-w-2xl">We offer comprehensive Full Body Checkups designed to give you a complete picture of your health. Available in over 100 cities across India.</p>
+          </div>
+          <div className="mt-6 md:mt-0 bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold flex items-center gap-2">
+            <MapPin className="w-5 h-5" /> 100+ Locations
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-y-4 gap-x-2">
+            {displayCities.map((city, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-gray-600 text-sm hover:text-blue-600 cursor-pointer transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                {city}
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-8 flex justify-center border-t border-gray-100 pt-6">
+            <button 
+              onClick={() => setExpanded(!expanded)}
+              className="flex items-center gap-2 text-blue-600 font-medium hover:text-blue-800 transition-colors"
+            >
+              {expanded ? (
+                <>Show Less <ChevronUp className="w-4 h-4" /></>
+              ) : (
+                <>View All {cities.length} Cities <ChevronDown className="w-4 h-4" /></>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Diagnostics = () => {
+  const [activeTab, setActiveTab] = useState('pathology');
+
+  return (
+    <section id="diagnostics" className="py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900">Pathology & Advanced Radiology</h2>
+          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">Equipped with state-of-the-art technology for accurate diagnoses. We provide a vast array of reliable blood tests, imaging, and specialized screenings.</p>
+        </div>
+
+        <div className="flex justify-center mb-10">
+          <div className="bg-slate-100 p-1 rounded-xl inline-flex shadow-inner">
+            <button 
+              onClick={() => setActiveTab('pathology')}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === 'pathology' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+            >
+              <Microscope className="w-5 h-5" />
+              Pathology Tests
+            </button>
+            <button 
+              onClick={() => setActiveTab('radiology')}
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${activeTab === 'radiology' ? 'bg-white text-blue-700 shadow-sm' : 'text-gray-600 hover:text-gray-900'}`}
+            >
+              <Activity className="w-5 h-5" />
+              Radiology & Imaging
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 md:p-10">
+          {activeTab === 'pathology' ? (
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Most Popular Health Tests</h3>
+              <div className="flex flex-wrap gap-3">
+                {healthTests.map((test, idx) => (
+                  <span key={idx} className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm hover:border-blue-400 hover:text-blue-700 hover:shadow-sm cursor-pointer transition-all">
+                    {test}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Most Popular Radiology Scans</h3>
+              <div className="flex flex-wrap gap-3">
+                {radiologyTests.map((test, idx) => (
+                  <span key={idx} className="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm hover:border-blue-400 hover:text-blue-700 hover:shadow-sm cursor-pointer transition-all">
+                    {test}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Assessments = () => (
+  <section id="assessments" className="py-20 bg-blue-900 text-white">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold mb-4">Tailored Health Assessments</h2>
+        <p className="text-blue-200 max-w-2xl">Not sure which test to take? Browse our targeted profiles based on your specific risk factors or lifestyle habits to find exactly what you need.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-10">
+        {/* Risks */}
+        <div className="bg-blue-800/50 rounded-2xl p-8 border border-blue-700/50">
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
+            <Activity className="w-6 h-6 text-blue-300" />
+            Browse Tests by Risks
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {testsByRisk.map((risk, idx) => (
+              <span key={idx} className="bg-blue-900/50 text-blue-100 px-3 py-1.5 rounded-md text-sm hover:bg-blue-700 cursor-pointer transition-colors border border-blue-700/50">
+                {risk}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Habits */}
+        <div className="bg-blue-800/50 rounded-2xl p-8 border border-blue-700/50">
+          <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
+            <User className="w-6 h-6 text-blue-300" />
+            Browse Tests by Habits
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {testsByHabit.map((habit, idx) => (
+              <span key={idx} className="bg-blue-900/50 text-blue-100 px-3 py-1.5 rounded-md text-sm hover:bg-blue-700 cursor-pointer transition-colors border border-blue-700/50">
+                {habit}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const Footer = () => (
+  <footer className="bg-gray-900 text-gray-300 py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid md:grid-cols-3 gap-8 pb-8 border-b border-gray-800">
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <HeartPulse className="h-6 w-6 text-blue-500" />
+            <span className="font-bold text-xl text-white">MediCore<span className="text-blue-500">Diagnostics</span></span>
+          </div>
+          <p className="text-gray-400 text-sm mb-6">Ensuring Quality Care, Everywhere. We provide world-class healthcare services driven by operational excellence and patient safety.</p>
+        </div>
+        
+        <div>
+          <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="#home" className="hover:text-blue-400 transition-colors">Home</a></li>
+            <li><a href="#services" className="hover:text-blue-400 transition-colors">Our Services</a></li>
+            <li><a href="#diagnostics" className="hover:text-blue-400 transition-colors">Diagnostics & Radiology</a></li>
+            <li><a href="#leadership" className="hover:text-blue-400 transition-colors">Leadership</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="text-white font-semibold mb-4">Contact Us</h4>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-center gap-3">
+              <Phone className="w-4 h-4 text-blue-500" />
+              1-800-HEALTH-TEST
+            </li>
+            <li className="flex items-center gap-3">
+              <Mail className="w-4 h-4 text-blue-500" />
+              support@medicorediagnostics.com
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+        <p>&copy; 2026 MediCore Diagnostics. All Rights Reserved.</p>
+        <div className="flex gap-4 mt-4 md:mt-0">
+          <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
+          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" className="hover:text-white transition-colors">Patient Rights</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+);
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 scroll-smooth">
+      <Nav />
+      <main>
+        <Hero />
+        <Leadership />
+        <ServicesCities />
+        <Diagnostics />
+        <Assessments />
+      </main>
+      <Footer />
+    </div>
+  );
+}
